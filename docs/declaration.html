@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+@page { size: A4; margin: 18mm 15mm; }
+body { font-family: 'Noto Sans SC', 'DejaVu Sans', 'PingFang SC', sans-serif; font-size: 10pt; color: #1a1a2e; line-height: 1.6; }
+h1 { font-size: 16pt; text-align: center; color: #16213e; margin-bottom: 2px; }
+.subtitle { text-align: center; font-size: 9pt; color: #666; margin-bottom: 8px; }
+.section { margin: 8px 0; }
+.section-title { font-size: 11pt; font-weight: 700; color: #0f3460; border-bottom: 2px solid #0f3460; padding-bottom: 2px; margin-bottom: 4px; }
+.arch-img { text-align: center; margin: 6px 0; }
+.arch-img img { max-width: 100%; height: auto; }
+.grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.grid-item { flex: 1 1 45%; background: #f8f9fa; border-radius: 4px; padding: 5px 8px; border-left: 3px solid #0f3460; }
+.grid-item h4 { margin: 0 0 2px 0; font-size: 9.5pt; color: #0f3460; }
+.grid-item p { margin: 0; font-size: 8.5pt; color: #333; }
+.stats { display: flex; justify-content: space-around; text-align: center; margin: 6px 0; }
+.stat-box { background: #e8f0fe; border-radius: 6px; padding: 6px 12px; min-width: 70px; }
+.stat-num { font-size: 16pt; font-weight: 700; color: #0f3460; }
+.stat-label { font-size: 7.5pt; color: #555; }
+.code-block { background: #f5f5f5; padding: 4px 8px; border-radius: 3px; font-family: 'Courier New', monospace; font-size: 7.5pt; border: 1px solid #ddd; overflow-x: auto; white-space: pre-wrap; }
+.features { display: flex; flex-wrap: wrap; gap: 3px; margin: 4px 0; }
+.feature-tag { background: #e8f0fe; color: #0f3460; padding: 1px 8px; border-radius: 10px; font-size: 7.5pt; }
+table { width: 100%; border-collapse: collapse; font-size: 8pt; }
+th, td { border: 1px solid #ddd; padding: 3px 6px; text-align: left; }
+th { background: #0f3460; color: white; font-weight: 600; }
+tr:nth-child(even) { background: #f8f9fa; }
+.footer { text-align: center; font-size: 7.5pt; color: #999; margin-top: 10px; border-top: 1px solid #ddd; padding-top: 4px; }
+</style>
+</head>
+<body>
+
+<h1>moonbit-log — 结构化日志库</h1>
+<p class="subtitle">CCF 开源创新大赛 · MoonBit 赛道参赛作品 · 2026</p>
+
+<div class="section">
+  <div class="section-title">项目概述</div>
+  <p style="font-size:9pt;margin:3px 0;">
+  <b>moonbit-log</b> 是一个基于 MoonBit 语言构建的高性能结构化日志库，支持多级别日志、
+  多种输出格式（JSON、Text、XML、Logfmt、CSV 等）、文件轮转、异步批处理、审计日志、
+  性能基准测试等特性。提供全局 Logger 便捷 API 和灵活的配置系统，适用于服务端、
+  嵌入式系统、数据分析等场景。
+  </p>
+</div>
+
+<div class="arch-img">
+  <img src="architecture.png" alt="moonbit-log Architecture">
+</div>
+
+<div class="section">
+  <div class="section-title">技术特性</div>
+  <div class="features">
+    <span class="feature-tag">6 种日志级别</span>
+    <span class="feature-tag">12+ 种格式器</span>
+    <span class="feature-tag">15 个 Handler</span>
+    <span class="feature-tag">文件轮转</span>
+    <span class="feature-tag">异步批处理</span>
+    <span class="feature-tag">审计日志</span>
+    <span class="feature-tag">采样/去重/限流</span>
+    <span class="feature-tag">JSON 序列化</span>
+    <span class="feature-tag">字段脱敏</span>
+    <span class="feature-tag">Stopwatch/基准测试</span>
+    <span class="feature-tag">配置系统</span>
+    <span class="feature-tag">全局 Logger</span>
+    <span class="feature-tag">ANSI 彩色输出</span>
+    <span class="feature-tag">163 个测试用例</span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">核心模块</div>
+  <div class="grid">
+    <div class="grid-item">
+      <h4>Level</h4>
+      <p>6 级日志级别：Debug / Info / Warn / Error / Fatal / Audit，支持 Show/Eq 和排序</p>
+    </div>
+    <div class="grid-item">
+      <h4>LogEntry</h4>
+      <p>结构化日志条目，含 Builder 模式、时间戳、线程 ID、序列号、字段 KV 存储</p>
+    </div>
+    <div class="grid-item">
+      <h4>Logger</h4>
+      <p>多 Handler 分发、级别过滤、序列号生成、级联 flush/close</p>
+    </div>
+    <div class="grid-item">
+      <h4>Handlers</h4>
+      <p>Console / File / JSON / Text / Memory / Audit / RotatingFile / RingBuffer / Sampling / Dedup / RateLimited / Async / Throttled 等</p>
+    </div>
+    <div class="grid-item">
+      <h4>Formatters</h4>
+      <p>text / compact / json / audit / logfmt / XML / pretty(ANSI) / pattern / multi_line / kv / banner / CSV / stats</p>
+    </div>
+    <div class="grid-item">
+      <h4>Config</h4>
+      <p>LogConfig 配置系统、build_logger / build_async / build_multi 工厂方法、JSON 配置解析</p>
+    </div>
+    <div class="grid-item">
+      <h4>Entry Utils</h4>
+      <p>JSON 序列化/反序列化、过滤、排序、合并、脱敏、字段变换</p>
+    </div>
+    <div class="grid-item">
+      <h4>Performance</h4>
+      <p>Stopwatch (μs/ms/s)、Benchmark (最值/均值)、ThroughputMeter、benchmark_compare</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">代码统计</div>
+  <div class="stats">
+    <div class="stat-box"><div class="stat-num">4,127</div><div class="stat-label">有效代码行数</div></div>
+    <div class="stat-box"><div class="stat-num">24</div><div class="stat-label">源文件</div></div>
+    <div class="stat-box"><div class="stat-num">163</div><div class="stat-label">测试用例</div></div>
+    <div class="stat-box"><div class="stat-num">0</div><div class="stat-label">测试失败</div></div>
+    <div class="stat-box"><div class="stat-num">7</div><div class="stat-label">示例场景</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">使用示例</div>
+  <table>
+    <tr><th>功能</th><th>代码</th></tr>
+    <tr><td>基本日志</td><td><code>g_info("Server started")</code></td></tr>
+    <tr><td>结构化日志</td><td><code>g_info("User login", [("user_id", "42"), ("ip", "10.0.0.1")])</code></td></tr>
+    <tr><td>JSON 输出</td><td><code>init_default_json()</code></td></tr>
+    <tr><td>审计日志</td><td><code>AuditHandler::new(Debug, audit_formatter("|"), 100)</code></td></tr>
+    <tr><td>文件轮转</td><td><code>RotatingFileHandler::new("app.log", 5, 1048576, fmt)</code></td></tr>
+    <tr><td>异步批处理</td><td><code>AsyncLogger::new(handler, batch_size=64)</code></td></tr>
+    <tr><td>性能基准</td><td><code>let r = benchmark("func", 1000, fn() { ... })</code></td></tr>
+    <tr><td>配置系统</td><td><code>configure(#!, level: Info, format: "json")</code></td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">Handler 功能矩阵</div>
+  <table>
+    <tr><th>Handler</th><th>输出</th><th>过滤</th><th>缓冲</th><th>轮转</th><th>采样</th><th>去重</th><th>限流</th><th>异步</th></tr>
+    <tr><td>ConsoleHandler</td><td>stdout</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>FileHandler</td><td>文件</td><td>-</td><td>行缓冲</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>MemoryHandler</td><td>内存</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>AuditHandler</td><td>内存</td><td>级别+字段</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>RotatingFileHandler</td><td>文件</td><td>-</td><td>行缓冲</td><td>✓</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>RingBufferHandler</td><td>内存</td><td>-</td><td>环形</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>SamplingHandler</td><td>包装</td><td>-</td><td>-</td><td>-</td><td>✓</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>DedupHandler</td><td>包装</td><td>消息去重</td><td>-</td><td>-</td><td>-</td><td>✓</td><td>-</td><td>-</td></tr>
+    <tr><td>RateLimitedHandler</td><td>包装</td><td>时间窗口</td><td>-</td><td>-</td><td>-</td><td>-</td><td>✓</td><td>-</td></tr>
+    <tr><td>LevelFilteredHandler</td><td>包装</td><td>级别范围</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+    <tr><td>AsyncLogger</td><td>包装</td><td>-</td><td>批量队列</td><td>-</td><td>-</td><td>-</td><td>-</td><td>✓</td></tr>
+    <tr><td>BatchingLogger</td><td>包装</td><td>-</td><td>超时批</td><td>-</td><td>-</td><td>-</td><td>-</td><td>✓</td></tr>
+  </table>
+</div>
+
+<div class="footer">
+  moonbit-log v1.0.0 · 仓库: https://gitlink.org.cn/leppard/moonbit-log · 许可证: Apache-2.0
+</div>
+
+</body>
+</html>
