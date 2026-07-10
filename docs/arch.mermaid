@@ -1,0 +1,22 @@
+graph TD
+    U["User API: g_debug/g_info/g_warn/g_error/g_fatal"]
+    L["Logger: Multi-handler dispatch, level filter, seq no"]
+    H["Handler Chain"]
+    W["Handler Wrappers: MultiHandler, HandlerFn, EntryTransformer, AsyncLogger"]
+    C["Core Handlers: Console, File, JSON, Text, Memory, Audit"]
+    A["Advanced Handlers: RotatingFile, RingBuffer, Sampling, Dedup, LevelFiltered, RateLimited, Throttled, Null, Condition, Counting"]
+    F["Formatters: text, compact, json, audit, kv, logfmt, XML, pretty(ANSI), pattern, multi_line, stats, banner, CSV"]
+    E["Entry Utils: JSON serialize/parse, filter, sort, merge, mask_field, redirect"]
+    P["Performance Tools: Stopwatch, Benchmark, ThroughputMeter, measure_time"]
+    CFG["Config System: LogConfig, build_logger, build_async, from_config_json"]
+
+    U --> L
+    L --> H
+    H --> W
+    W --> C
+    W --> A
+    C --> F
+    A --> F
+    F --> E
+    E --> P
+    CFG --- L

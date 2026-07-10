@@ -1,0 +1,548 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "leppard/moonbit-log"
+
+import {
+  "moonbitlang/core/bench",
+}
+
+// Values
+pub fn add_thread_id(LogEntry, Int) -> LogEntry
+
+pub fn add_timestamp(LogEntry) -> LogEntry
+
+pub fn ansi_blue() -> String
+
+pub fn ansi_bold() -> String
+
+pub fn ansi_cyan() -> String
+
+pub fn ansi_dim() -> String
+
+pub fn ansi_gray() -> String
+
+pub fn ansi_green() -> String
+
+pub fn ansi_magenta() -> String
+
+pub fn ansi_red() -> String
+
+pub fn ansi_reset() -> String
+
+pub fn ansi_yellow() -> String
+
+pub fn audit_formatter(String) -> (LogEntry) -> String
+
+pub fn audit_logger(Level, String) -> Logger
+
+pub fn banner_formatter(Int) -> (LogEntry) -> String
+
+pub fn benchmark(String, Int, () -> Unit) -> BenchmarkResult
+
+pub fn benchmark_compare(String, String, Int, () -> Unit, () -> Unit) -> String
+
+pub fn benchmark_report(BenchmarkResult) -> String
+
+pub fn benchmark_warmup(String, Int, Int, () -> Unit) -> BenchmarkResult
+
+pub fn compact_formatter() -> (LogEntry) -> String
+
+pub fn configure(Level, (LogEntry) -> String) -> Unit
+
+pub fn csv_formatter(String, Bool) -> (LogEntry) -> String
+
+pub fn custom_formatter((LogEntry) -> String) -> (LogEntry) -> String
+
+pub fn default_setup() -> Logger
+
+pub fn entries_by_level(Array[LogEntry], Level) -> Array[LogEntry]
+
+pub fn entries_count(Array[LogEntry]) -> Int
+
+pub fn entries_earliest(Array[LogEntry]) -> LogEntry?
+
+pub fn entries_filter(Array[LogEntry], (LogEntry) -> Bool) -> Array[LogEntry]
+
+pub fn entries_latest(Array[LogEntry]) -> LogEntry?
+
+pub fn entries_reject(Array[LogEntry], (LogEntry) -> Bool) -> Array[LogEntry]
+
+pub fn entries_sort_by_timestamp(Array[LogEntry]) -> Array[LogEntry]
+
+pub fn entries_summary(Array[LogEntry]) -> String
+
+pub fn entries_to_json_array(Array[LogEntry]) -> String
+
+pub fn entry_from_json(String) -> LogEntry?
+
+pub fn entry_get_field(LogEntry, String) -> String?
+
+pub fn entry_has_field(LogEntry, String) -> Bool
+
+pub fn entry_merge(LogEntry, LogEntry) -> LogEntry
+
+pub fn entry_to_json_string(LogEntry) -> String
+
+pub fn entry_with_fields(LogEntry, Array[(String, String)]) -> LogEntry
+
+pub fn from_config_json(String) -> Logger
+
+pub fn g_close() -> Unit
+
+pub fn g_debug(String) -> Unit
+
+pub fn g_error(String) -> Unit
+
+pub fn g_fatal(String) -> Unit
+
+pub fn g_flush() -> Unit
+
+pub fn g_info(String) -> Unit
+
+pub fn g_log(Level, String) -> Unit
+
+pub fn g_log_with(Level, String, Array[(String, String)]) -> Unit
+
+pub fn g_warn(String) -> Unit
+
+pub fn get_global_logger() -> Logger
+
+pub fn init_default_console() -> Unit
+
+pub fn init_default_json() -> Unit
+
+pub fn json_formatter() -> (LogEntry) -> String
+
+pub fn json_logger(Level) -> Logger
+
+pub fn kv_formatter() -> (LogEntry) -> String
+
+pub fn lazy_format(String, LogEntry) -> String
+
+pub fn logfmt_formatter() -> (LogEntry) -> String
+
+pub fn make_handler((LogEntry) -> Unit, () -> Unit, () -> Unit) -> HandlerFn
+
+pub fn mask_field(LogEntry, String) -> LogEntry
+
+pub fn measure_time(() -> Unit) -> Double
+
+pub fn measure_time_ms(() -> Unit) -> Double
+
+pub fn multi_line_formatter(Int) -> (LogEntry) -> String
+
+pub fn pattern_formatter(String) -> (LogEntry) -> String
+
+pub fn prefix_message(LogEntry, String) -> LogEntry
+
+pub fn pretty_formatter(Bool) -> (LogEntry) -> String
+
+pub fn quick_logger(Level) -> Logger
+
+pub fn redirect_level(LogEntry, Level, Level) -> LogEntry
+
+pub fn set_global_logger(Logger) -> Unit
+
+pub fn stats_formatter(Bool, Bool) -> (LogEntry) -> String
+
+pub fn strip_fields(LogEntry) -> LogEntry
+
+pub fn suffix_message(LogEntry, String) -> LogEntry
+
+pub fn text_formatter() -> (LogEntry) -> String
+
+pub fn xml_formatter() -> (LogEntry) -> String
+
+// Errors
+
+// Types and methods
+pub(all) struct AsyncLogger {
+  inner : HandlerFn
+  mut queue : Array[LogEntry]
+  mut batch_size : Int
+  mut dropped_count : Int
+}
+pub fn AsyncLogger::close(Self) -> Unit
+pub fn AsyncLogger::dropped_count(Self) -> Int
+pub fn AsyncLogger::flush(Self) -> Unit
+pub fn AsyncLogger::log(Self, LogEntry) -> Unit
+pub fn AsyncLogger::new(HandlerFn, Int) -> Self
+pub fn AsyncLogger::queue_size(Self) -> Int
+pub fn AsyncLogger::set_batch_size(Self, Int) -> Unit
+
+pub(all) struct AuditHandler {
+  level : Level
+  fmt : (LogEntry) -> String
+  mut entries : Array[LogEntry]
+  max_entries : Int
+}
+pub fn AuditHandler::close(Self) -> Unit
+pub fn AuditHandler::entries(Self) -> Array[LogEntry]
+pub fn AuditHandler::filter_by_level(Self, Level) -> Array[LogEntry]
+pub fn AuditHandler::flush(Self) -> Unit
+pub fn AuditHandler::log(Self, LogEntry) -> Unit
+pub fn AuditHandler::new(Level, (LogEntry) -> String, Int) -> Self
+pub fn AuditHandler::search_by_message(Self, String) -> Array[LogEntry]
+pub fn AuditHandler::search_by_module(Self, String) -> Array[LogEntry]
+
+pub(all) struct BatchingLogger {
+  inner : HandlerFn
+  mut entries : Array[LogEntry]
+  mut batch_size : Int
+  flush_interval : Int64
+  mut last_flush : Int64
+}
+pub fn BatchingLogger::close(Self) -> Unit
+pub fn BatchingLogger::flush(Self) -> Unit
+pub fn BatchingLogger::log(Self, LogEntry) -> Unit
+pub fn BatchingLogger::new(HandlerFn, Int, Int64) -> Self
+pub fn BatchingLogger::queue_size(Self) -> Int
+
+pub(all) struct BenchmarkResult {
+  name : String
+  iterations : Int
+  total_time_us : Double
+  min_time_us : Double
+  max_time_us : Double
+}
+pub fn BenchmarkResult::avg_time_us(Self) -> Double
+pub fn BenchmarkResult::iterations(Self) -> Int
+pub fn BenchmarkResult::max_time_us(Self) -> Double
+pub fn BenchmarkResult::min_time_us(Self) -> Double
+pub fn BenchmarkResult::name(Self) -> String
+pub fn BenchmarkResult::total_time_us(Self) -> Double
+
+pub(all) struct ConditionHandler {
+  inner : HandlerFn
+  condition : (LogEntry) -> Bool
+}
+pub fn ConditionHandler::close(Self) -> Unit
+pub fn ConditionHandler::flush(Self) -> Unit
+pub fn ConditionHandler::log(Self, LogEntry) -> Unit
+pub fn ConditionHandler::new(HandlerFn, (LogEntry) -> Bool) -> Self
+
+pub(all) struct ConsoleHandler {
+  level : Level
+  fmt : (LogEntry) -> String
+  use_stderr : Bool
+}
+pub fn ConsoleHandler::close(Self) -> Unit
+pub fn ConsoleHandler::flush(Self) -> Unit
+pub fn ConsoleHandler::log(Self, LogEntry) -> Unit
+pub fn ConsoleHandler::new(Level, (LogEntry) -> String) -> Self
+pub fn ConsoleHandler::with_stderr(Self, Bool) -> Self
+
+pub(all) struct CountingHandler {
+  inner : HandlerFn
+  mut debug_count : Int
+  mut info_count : Int
+  mut warn_count : Int
+  mut error_count : Int
+  mut fatal_count : Int
+}
+pub fn CountingHandler::close(Self) -> Unit
+pub fn CountingHandler::debug_count(Self) -> Int
+pub fn CountingHandler::error_count(Self) -> Int
+pub fn CountingHandler::fatal_count(Self) -> Int
+pub fn CountingHandler::flush(Self) -> Unit
+pub fn CountingHandler::info_count(Self) -> Int
+pub fn CountingHandler::log(Self, LogEntry) -> Unit
+pub fn CountingHandler::new(HandlerFn) -> Self
+pub fn CountingHandler::reset(Self) -> Unit
+pub fn CountingHandler::total_count(Self) -> Int
+pub fn CountingHandler::warn_count(Self) -> Int
+
+pub(all) struct DedupHandler {
+  inner : HandlerFn
+  mut last_message : String
+  mut repeat_count : Int
+}
+pub fn DedupHandler::close(Self) -> Unit
+pub fn DedupHandler::flush(Self) -> Unit
+pub fn DedupHandler::log(Self, LogEntry) -> Unit
+pub fn DedupHandler::new(HandlerFn) -> Self
+
+pub(all) struct EntryTransformer {
+  inner : HandlerFn
+  transform : (LogEntry) -> LogEntry
+}
+pub fn EntryTransformer::close(Self) -> Unit
+pub fn EntryTransformer::flush(Self) -> Unit
+pub fn EntryTransformer::log(Self, LogEntry) -> Unit
+pub fn EntryTransformer::new(HandlerFn, (LogEntry) -> LogEntry) -> Self
+
+pub(all) struct FileHandler {
+  level : Level
+  fmt : (LogEntry) -> String
+  mut lines : Array[String]
+  capacity : Int
+}
+pub fn FileHandler::close(Self) -> Unit
+pub fn FileHandler::flush(Self) -> Unit
+pub fn FileHandler::lines(Self) -> Array[String]
+pub fn FileHandler::log(Self, LogEntry) -> Unit
+pub fn FileHandler::new(Level, (LogEntry) -> String, Int) -> Self
+pub fn FileHandler::output_path() -> String
+
+pub(all) struct HandlerFn {
+  log_fn : (LogEntry) -> Unit
+  flush_fn : () -> Unit
+  close_fn : () -> Unit
+}
+pub fn HandlerFn::close(Self) -> Unit
+pub fn HandlerFn::flush(Self) -> Unit
+pub fn HandlerFn::log(Self, LogEntry) -> Unit
+
+pub(all) struct JsonHandler {
+  level : Level
+  fmt : (LogEntry) -> String
+}
+pub fn JsonHandler::close(Self) -> Unit
+pub fn JsonHandler::flush(Self) -> Unit
+pub fn JsonHandler::log(Self, LogEntry) -> Unit
+pub fn JsonHandler::new(Level, (LogEntry) -> String) -> Self
+
+pub(all) enum Level {
+  Debug
+  Info
+  Warn
+  Error
+  Fatal
+}
+pub fn Level::all() -> Array[Self]
+pub fn Level::enabled(Self, Self) -> Bool
+pub fn Level::from_string(String) -> Self
+pub fn Level::max(Self, Self) -> Self
+pub fn Level::min(Self, Self) -> Self
+pub fn Level::to_int(Self) -> Int
+pub fn Level::to_string(Self) -> String
+pub impl Eq for Level
+pub impl Show for Level
+
+pub(all) struct LevelFilteredHandler {
+  inner : HandlerFn
+  min_level : Level
+  max_level : Level
+}
+pub fn LevelFilteredHandler::close(Self) -> Unit
+pub fn LevelFilteredHandler::flush(Self) -> Unit
+pub fn LevelFilteredHandler::log(Self, LogEntry) -> Unit
+pub fn LevelFilteredHandler::new(HandlerFn, Level, Level) -> Self
+
+pub(all) struct LogConfig {
+  level : Level
+  format_type : String
+  output_type : String
+  batch_size : Int
+  max_files : Int
+  max_lines : Int
+  ansi_color : Bool
+  audit_separator : String
+}
+pub fn LogConfig::build_async(Self) -> Logger
+pub fn LogConfig::build_logger(Self) -> Logger
+pub fn LogConfig::build_multi(Self) -> MultiHandler
+pub fn LogConfig::default() -> Self
+pub fn LogConfig::describe(Self) -> String
+pub fn LogConfig::with_batch(Self, Int) -> Self
+pub fn LogConfig::with_color(Self, Bool) -> Self
+pub fn LogConfig::with_format(Self, String) -> Self
+pub fn LogConfig::with_level(Self, Level) -> Self
+pub fn LogConfig::with_output(Self, String) -> Self
+
+pub(all) struct LogEntry {
+  timestamp : Int64
+  level : Level
+  message : String
+  mod_name : String
+  fields : Array[(String, String)]
+  file : String
+  line : Int
+  thread_id : Int
+  sequence : Int64
+}
+pub fn LogEntry::fields(Self) -> Array[(String, String)]
+pub fn LogEntry::level(Self) -> Level
+pub fn LogEntry::location_file(Self) -> String
+pub fn LogEntry::location_line(Self) -> Int
+pub fn LogEntry::message(Self) -> String
+pub fn LogEntry::module_name(Self) -> String
+pub fn LogEntry::sequence(Self) -> Int64
+pub fn LogEntry::thread_id(Self) -> Int
+pub fn LogEntry::timestamp(Self) -> Int64
+
+pub(all) struct LogEntryBuilder {
+  entry : LogEntry
+}
+pub fn LogEntryBuilder::build(Self) -> LogEntry
+pub fn LogEntryBuilder::new(Level, String) -> Self
+pub fn LogEntryBuilder::with_field(Self, String, String) -> Self
+pub fn LogEntryBuilder::with_fields(Self, Array[(String, String)]) -> Self
+pub fn LogEntryBuilder::with_location(Self, String, Int) -> Self
+pub fn LogEntryBuilder::with_module(Self, String) -> Self
+pub fn LogEntryBuilder::with_sequence(Self, Int64) -> Self
+pub fn LogEntryBuilder::with_thread(Self, Int) -> Self
+pub fn LogEntryBuilder::with_timestamp(Self, Int64) -> Self
+
+pub(all) struct Logger {
+  mut handlers : Array[HandlerFn]
+  mut level : Level
+  mut seq : Int64
+}
+pub fn Logger::add_handler(Self, HandlerFn) -> Unit
+pub fn Logger::clear_handlers(Self) -> Unit
+pub fn Logger::close(Self) -> Unit
+pub fn Logger::debug(Self, String) -> Unit
+pub fn Logger::error(Self, String) -> Unit
+pub fn Logger::fatal(Self, String) -> Unit
+pub fn Logger::flush(Self) -> Unit
+pub fn Logger::info(Self, String) -> Unit
+pub fn Logger::log(Self, Level, String) -> Unit
+pub fn Logger::log_entry(Self, LogEntry) -> Unit
+pub fn Logger::log_with(Self, Level, String, Array[(String, String)]) -> Unit
+pub fn Logger::new() -> Self
+pub fn Logger::set_level(Self, Level) -> Unit
+pub fn Logger::warn(Self, String) -> Unit
+pub fn Logger::with_level(Self, Level) -> Self
+
+pub(all) struct MemoryHandler {
+  level : Level
+  fmt : (LogEntry) -> String
+  mut entries : Array[LogEntry]
+}
+pub fn MemoryHandler::clear(Self) -> Unit
+pub fn MemoryHandler::close(Self) -> Unit
+pub fn MemoryHandler::count(Self) -> Int
+pub fn MemoryHandler::count_by_level(Self, Level) -> Int
+pub fn MemoryHandler::entries(Self) -> Array[LogEntry]
+pub fn MemoryHandler::first_entry(Self) -> LogEntry?
+pub fn MemoryHandler::flush(Self) -> Unit
+pub fn MemoryHandler::formatted_lines(Self) -> Array[String]
+pub fn MemoryHandler::last_entry(Self) -> LogEntry?
+pub fn MemoryHandler::log(Self, LogEntry) -> Unit
+pub fn MemoryHandler::new(Level, (LogEntry) -> String) -> Self
+
+pub(all) struct MultiHandler {
+  handlers : Array[HandlerFn]
+}
+pub fn MultiHandler::add(Self, HandlerFn) -> Unit
+pub fn MultiHandler::close(Self) -> Unit
+pub fn MultiHandler::flush(Self) -> Unit
+pub fn MultiHandler::log(Self, LogEntry) -> Unit
+pub fn MultiHandler::new() -> Self
+
+pub(all) struct NullHandler {
+  level : Level
+}
+pub fn NullHandler::close(Self) -> Unit
+pub fn NullHandler::flush(Self) -> Unit
+pub fn NullHandler::log(Self, LogEntry) -> Unit
+pub fn NullHandler::new(Level) -> Self
+
+pub(all) struct RateLimitedHandler {
+  inner : HandlerFn
+  max_per_second : Int
+  mut window_count : Int
+  mut window_start : Int64
+  window_duration : Int64
+}
+pub fn RateLimitedHandler::close(Self) -> Unit
+pub fn RateLimitedHandler::flush(Self) -> Unit
+pub fn RateLimitedHandler::log(Self, LogEntry) -> Unit
+pub fn RateLimitedHandler::new(HandlerFn, Int) -> Self
+
+pub(all) struct RingBufferHandler {
+  level : Level
+  fmt : (LogEntry) -> String
+  mut buffer : Array[LogEntry]
+  capacity : Int
+  mut head : Int
+  mut count : Int
+}
+pub fn RingBufferHandler::close(Self) -> Unit
+pub fn RingBufferHandler::drain(Self) -> Array[LogEntry]
+pub fn RingBufferHandler::entries(Self) -> Array[LogEntry]
+pub fn RingBufferHandler::fill_ratio(Self) -> Double
+pub fn RingBufferHandler::flush(Self) -> Unit
+pub fn RingBufferHandler::is_full(Self) -> Bool
+pub fn RingBufferHandler::log(Self, LogEntry) -> Unit
+pub fn RingBufferHandler::new(Level, (LogEntry) -> String, Int) -> Self
+
+pub(all) struct RotatingFileHandler {
+  level : Level
+  fmt : (LogEntry) -> String
+  mut lines : Array[String]
+  max_lines : Int
+  max_files : Int
+  base_path : String
+  mut file_count : Int
+}
+pub fn RotatingFileHandler::close(Self) -> Unit
+pub fn RotatingFileHandler::file_count(Self) -> Int
+pub fn RotatingFileHandler::flush(Self) -> Unit
+pub fn RotatingFileHandler::lines(Self) -> Array[String]
+pub fn RotatingFileHandler::log(Self, LogEntry) -> Unit
+pub fn RotatingFileHandler::new(Level, (LogEntry) -> String, String, Int, Int) -> Self
+
+pub(all) struct SamplingHandler {
+  inner : HandlerFn
+  rate : Int
+  mut count : Int
+}
+pub fn SamplingHandler::close(Self) -> Unit
+pub fn SamplingHandler::flush(Self) -> Unit
+pub fn SamplingHandler::log(Self, LogEntry) -> Unit
+pub fn SamplingHandler::new(HandlerFn, Int) -> Self
+pub fn SamplingHandler::reset(Self) -> Unit
+
+pub(all) struct Stopwatch {
+  mut elapsed : Double
+  mut running : Bool
+  mut start_time : @bench.Timestamp
+}
+pub fn Stopwatch::elapsed_micros(Self) -> Double
+pub fn Stopwatch::elapsed_millis(Self) -> Double
+pub fn Stopwatch::elapsed_secs(Self) -> Double
+pub fn Stopwatch::format_elapsed(Self) -> String
+pub fn Stopwatch::is_running(Self) -> Bool
+pub fn Stopwatch::new() -> Self
+pub fn Stopwatch::reset(Self) -> Unit
+pub fn Stopwatch::restart(Self) -> Unit
+pub fn Stopwatch::start(Self) -> Unit
+pub fn Stopwatch::stop(Self) -> Unit
+
+pub(all) struct TextHandler {
+  level : Level
+  fmt : (LogEntry) -> String
+  prefix : String
+}
+pub fn TextHandler::close(Self) -> Unit
+pub fn TextHandler::flush(Self) -> Unit
+pub fn TextHandler::log(Self, LogEntry) -> Unit
+pub fn TextHandler::new(Level, (LogEntry) -> String) -> Self
+pub fn TextHandler::with_prefix(Self, String) -> Self
+
+pub(all) struct ThrottledHandler {
+  inner : HandlerFn
+  mut seen : Array[String]
+}
+pub fn ThrottledHandler::close(Self) -> Unit
+pub fn ThrottledHandler::flush(Self) -> Unit
+pub fn ThrottledHandler::log(Self, LogEntry) -> Unit
+pub fn ThrottledHandler::new(HandlerFn) -> Self
+
+pub(all) struct ThroughputMeter {
+  sw : Stopwatch
+  mut count : Int64
+}
+pub fn ThroughputMeter::elapsed_str(Self) -> String
+pub fn ThroughputMeter::format_throughput(Self) -> String
+pub fn ThroughputMeter::increment(Self) -> Unit
+pub fn ThroughputMeter::new() -> Self
+pub fn ThroughputMeter::ops_per_second(Self) -> Double
+pub fn ThroughputMeter::record_batch(Self, Int64) -> Unit
+pub fn ThroughputMeter::stop(Self) -> Unit
+
+// Type aliases
+
+// Traits
+

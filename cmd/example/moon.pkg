@@ -1,0 +1,6 @@
+options(
+  "is-main": true,
+)
+import {
+  "leppard/moonbit-log" @log,
+}
