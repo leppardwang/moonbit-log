@@ -1,3 +1,4 @@
+///|
 test "Level::to_int" {
   inspect(Level::Debug.to_int(), content="0")
   inspect(Level::Info.to_int(), content="1")
@@ -6,6 +7,7 @@ test "Level::to_int" {
   inspect(Level::Fatal.to_int(), content="4")
 }
 
+///|
 test "Level::to_string" {
   inspect(Level::Debug.to_string(), content="DEBUG")
   inspect(Level::Info.to_string(), content="INFO")
@@ -14,12 +16,14 @@ test "Level::to_string" {
   inspect(Level::Fatal.to_string(), content="FATAL")
 }
 
+///|
 test "Level::from_string" {
   inspect(Level::from_string("DEBUG"), content="DEBUG")
   inspect(Level::from_string("info"), content="INFO")
   inspect(Level::from_string("WARN"), content="WARN")
 }
 
+///|
 test "Level::enabled" {
   inspect(Level::Debug.enabled(Level::Debug), content="true")
   inspect(Level::Debug.enabled(Level::Info), content="false")
@@ -28,23 +32,27 @@ test "Level::enabled" {
   inspect(Level::Error.enabled(Level::Fatal), content="false")
 }
 
+///|
 test "Level::all" {
   let all = Level::all()
   inspect(all.length(), content="5")
   inspect(all[0].to_string(), content="DEBUG")
 }
 
+///|
 test "Level::min_max" {
   inspect(Level::min(Level::Debug, Level::Error).to_string(), content="DEBUG")
   inspect(Level::max(Level::Debug, Level::Error).to_string(), content="ERROR")
 }
 
+///|
 test "LogEntryBuilder::basic" {
   let entry = LogEntryBuilder::new(Level::Info, "hello").build()
   inspect(entry.level().to_string(), content="INFO")
   inspect(entry.message(), content="hello")
 }
 
+///|
 test "LogEntryBuilder::with_module" {
   let entry = LogEntryBuilder::new(Level::Warn, "test")
     .with_module("auth")
@@ -52,6 +60,7 @@ test "LogEntryBuilder::with_module" {
   inspect(entry.module_name(), content="auth")
 }
 
+///|
 test "LogEntryBuilder::with_field" {
   let entry = LogEntryBuilder::new(Level::Error, "err")
     .with_field("user_id", "42")
@@ -64,6 +73,7 @@ test "LogEntryBuilder::with_field" {
   inspect(v1, content="42")
 }
 
+///|
 test "LogEntryBuilder::with_location" {
   let entry = LogEntryBuilder::new(Level::Debug, "loc")
     .with_location("main.mbt", 42)
@@ -72,6 +82,7 @@ test "LogEntryBuilder::with_location" {
   inspect(entry.location_line(), content="42")
 }
 
+///|
 test "LogEntryBuilder::with_sequence" {
   let entry = LogEntryBuilder::new(Level::Info, "seq")
     .with_sequence(99L)
@@ -79,6 +90,7 @@ test "LogEntryBuilder::with_sequence" {
   inspect(entry.sequence(), content="99")
 }
 
+///|
 test "text_formatter output" {
   let fmt = text_formatter()
   let entry = LogEntryBuilder::new(Level::Info, "hello")
@@ -92,6 +104,7 @@ test "text_formatter output" {
   inspect(line.contains("key=val"), content="true")
 }
 
+///|
 test "compact_formatter output" {
   let fmt = compact_formatter()
   let entry = LogEntryBuilder::new(Level::Warn, "short").build()
@@ -100,6 +113,7 @@ test "compact_formatter output" {
   inspect(line.contains("short"), content="true")
 }
 
+///|
 test "json_formatter output" {
   let fmt = json_formatter()
   let entry = LogEntryBuilder::new(Level::Error, "json_test")
@@ -111,6 +125,7 @@ test "json_formatter output" {
   inspect(line.contains("\"fields\""), content="true")
 }
 
+///|
 test "audit_formatter output" {
   let fmt = audit_formatter("|")
   let entry = LogEntryBuilder::new(Level::Fatal, "audit_event")
@@ -123,6 +138,7 @@ test "audit_formatter output" {
   inspect(line.contains("audit_event"), content="true")
 }
 
+///|
 test "custom_formatter" {
   let fmt = custom_formatter(fn(e : LogEntry) -> String {
     "CUSTOM: " + e.message()
@@ -132,6 +148,7 @@ test "custom_formatter" {
   inspect(line, content="CUSTOM: custom")
 }
 
+///|
 test "ConsoleHandler filters by level" {
   let fmt = compact_formatter()
   let h = ConsoleHandler::new(Level::Error, fmt)
@@ -141,6 +158,7 @@ test "ConsoleHandler filters by level" {
   h.log(e2)
 }
 
+///|
 test "MemoryHandler records entries" {
   let fmt = compact_formatter()
   let h = MemoryHandler::new(Level::Debug, fmt)
@@ -151,6 +169,7 @@ test "MemoryHandler records entries" {
   inspect(last is Some(_), content="true")
 }
 
+///|
 test "MemoryHandler count_by_level" {
   let fmt = compact_formatter()
   let h = MemoryHandler::new(Level::Debug, fmt)
@@ -161,6 +180,7 @@ test "MemoryHandler count_by_level" {
   inspect(h.count_by_level(Level::Error), content="1")
 }
 
+///|
 test "MemoryHandler clear" {
   let fmt = compact_formatter()
   let h = MemoryHandler::new(Level::Debug, fmt)
@@ -170,6 +190,7 @@ test "MemoryHandler clear" {
   inspect(h.count(), content="0")
 }
 
+///|
 test "FileHandler buffers and flushes" {
   let fmt = compact_formatter()
   let h = FileHandler::new(Level::Debug, fmt, 3)
@@ -180,18 +201,25 @@ test "FileHandler buffers and flushes" {
   inspect(h.lines().length(), content="0")
 }
 
+///|
 test "AuditHandler stores and filters" {
   let fmt = audit_formatter("|")
   let h = AuditHandler::new(Level::Debug, fmt, 100)
-  h.log(LogEntryBuilder::new(Level::Info, "login_ok")
+  h.log(
+    LogEntryBuilder::new(Level::Info, "login_ok")
     .with_module("auth")
-    .with_field("user", "alice").build())
-  h.log(LogEntryBuilder::new(Level::Warn, "login_fail")
+    .with_field("user", "alice")
+    .build(),
+  )
+  h.log(
+    LogEntryBuilder::new(Level::Warn, "login_fail")
     .with_module("auth")
-    .with_field("user", "bob").build())
-  h.log(LogEntryBuilder::new(Level::Info, "data_access")
-    .with_module("data")
-    .build())
+    .with_field("user", "bob")
+    .build(),
+  )
+  h.log(
+    LogEntryBuilder::new(Level::Info, "data_access").with_module("data").build(),
+  )
   inspect(h.entries().length(), content="3")
   let filtered = h.filter_by_level(Level::Info)
   inspect(filtered.length(), content="2")
@@ -201,15 +229,16 @@ test "AuditHandler stores and filters" {
   inspect(msg_search.length(), content="2")
 }
 
+///|
 test "Logger basic logging" {
   let fmt = compact_formatter()
   let mem = MemoryHandler::new(Level::Debug, fmt)
   let logger = Logger::new()
-  logger.add_handler(make_handler(
-    fn(e) { mem.log(e) },
-    fn() { mem.flush() },
-    fn() { mem.close() },
-  ))
+  logger.add_handler(
+    make_handler(fn(e) { mem.log(e) }, fn() { mem.flush() }, fn() {
+      mem.close()
+    }),
+  )
   logger.debug("debug msg")
   logger.info("info msg")
   logger.warn("warn msg")
@@ -217,15 +246,16 @@ test "Logger basic logging" {
   inspect(mem.count(), content="4")
 }
 
+///|
 test "Logger level filtering" {
   let fmt = compact_formatter()
   let mem = MemoryHandler::new(Level::Error, fmt)
   let logger = Logger::new().with_level(Level::Error)
-  logger.add_handler(make_handler(
-    fn(e) { mem.log(e) },
-    fn() { mem.flush() },
-    fn() { mem.close() },
-  ))
+  logger.add_handler(
+    make_handler(fn(e) { mem.log(e) }, fn() { mem.flush() }, fn() {
+      mem.close()
+    }),
+  )
   logger.debug("should not appear")
   logger.info("should not appear")
   logger.warn("should not appear")
@@ -234,19 +264,21 @@ test "Logger level filtering" {
   inspect(mem.count(), content="2")
 }
 
+///|
 test "Logger log_with fields" {
   let fmt = compact_formatter()
   let mem = MemoryHandler::new(Level::Debug, fmt)
   let logger = Logger::new()
-  logger.add_handler(make_handler(
-    fn(e) { mem.log(e) },
-    fn() { mem.flush() },
-    fn() { mem.close() },
-  ))
+  logger.add_handler(
+    make_handler(fn(e) { mem.log(e) }, fn() { mem.flush() }, fn() {
+      mem.close()
+    }),
+  )
   logger.log_with(Level::Info, "with fields", [("k1", "v1"), ("k2", "v2")])
   inspect(mem.count(), content="1")
 }
 
+///|
 test "LogEntry accessors" {
   let entry = LogEntryBuilder::new(Level::Info, "acc")
     .with_module("mod")
@@ -265,6 +297,7 @@ test "LogEntry accessors" {
   inspect(entry.sequence(), content="7")
 }
 
+///|
 test "Stopwatch basic" {
   let sw = Stopwatch::new()
   sw.start()
@@ -280,6 +313,7 @@ test "Stopwatch basic" {
   inspect(elapsed > 0.0, content="true")
 }
 
+///|
 test "Stopwatch reset" {
   let sw = Stopwatch::new()
   sw.start()
@@ -288,6 +322,7 @@ test "Stopwatch reset" {
   inspect(sw.elapsed_micros(), content="0")
 }
 
+///|
 test "Stopwatch restart" {
   let sw = Stopwatch::new()
   sw.start()
@@ -297,6 +332,7 @@ test "Stopwatch restart" {
   sw.stop()
 }
 
+///|
 test "Stopwatch units" {
   let sw = Stopwatch::new()
   sw.start()
@@ -306,39 +342,35 @@ test "Stopwatch units" {
   inspect(ms <= us, content="true")
 }
 
+///|
 test "benchmark runs function" {
-  let r = benchmark("empty", 5, fn() {})
+  let r = benchmark("empty", 5, fn() {  })
   inspect(r.iterations(), content="5")
   inspect(r.total_time_us() > 0.0, content="true")
 }
 
+///|
 test "benchmark report format" {
-  let r = benchmark("test", 1, fn() {})
+  let r = benchmark("test", 1, fn() {  })
   let report = benchmark_report(r)
   inspect(report.contains("Benchmark: test"), content="true")
   inspect(report.contains("Iterations:"), content="true")
 }
 
+///|
 test "MultiHandler dispatches" {
   let fmt = compact_formatter()
   let mem1 = MemoryHandler::new(Level::Debug, fmt)
   let mem2 = MemoryHandler::new(Level::Debug, fmt)
   let multi = MultiHandler::new()
-  multi.add(make_handler(
-    fn(e) { mem1.log(e) },
-    fn() {},
-    fn() {},
-  ))
-  multi.add(make_handler(
-    fn(e) { mem2.log(e) },
-    fn() {},
-    fn() {},
-  ))
+  multi.add(make_handler(fn(e) { mem1.log(e) }, fn() {  }, fn() {  }))
+  multi.add(make_handler(fn(e) { mem2.log(e) }, fn() {  }, fn() {  }))
   multi.log(LogEntryBuilder::new(Level::Info, "multi").build())
   inspect(mem1.count(), content="1")
   inspect(mem2.count(), content="1")
 }
 
+///|
 test "AuditHandler search_by_message" {
   let fmt = audit_formatter("|")
   let h = AuditHandler::new(Level::Debug, fmt, 100)
@@ -353,6 +385,7 @@ test "AuditHandler search_by_message" {
   inspect(r3.length(), content="0")
 }
 
+///|
 test "LogEntryBuilder::with_sequence idempotent" {
   let e1 = LogEntryBuilder::new(Level::Info, "a").with_sequence(1L).build()
   let e2 = LogEntryBuilder::new(Level::Info, "b").with_sequence(1L).build()
@@ -360,46 +393,38 @@ test "LogEntryBuilder::with_sequence idempotent" {
   inspect(e2.sequence(), content="1")
 }
 
+///|
 test "Logger with multiple handlers" {
   let fmt = compact_formatter()
   let mem1 = MemoryHandler::new(Level::Debug, fmt)
   let mem2 = MemoryHandler::new(Level::Debug, fmt)
   let logger = Logger::new()
-  logger.add_handler(make_handler(
-    fn(e) { mem1.log(e) },
-    fn() {},
-    fn() {},
-  ))
-  logger.add_handler(make_handler(
-    fn(e) { mem2.log(e) },
-    fn() {},
-    fn() {},
-  ))
+  logger.add_handler(make_handler(fn(e) { mem1.log(e) }, fn() {  }, fn() {  }))
+  logger.add_handler(make_handler(fn(e) { mem2.log(e) }, fn() {  }, fn() {  }))
   logger.info("broadcast")
   inspect(mem1.count(), content="1")
   inspect(mem2.count(), content="1")
 }
 
+///|
 test "Flush and close handlers" {
   let fmt = compact_formatter()
   let mem = MemoryHandler::new(Level::Debug, fmt)
   let logger = Logger::new()
-  logger.add_handler(make_handler(
-    fn(e) { mem.log(e) },
-    fn() {},
-    fn() {},
-  ))
+  logger.add_handler(make_handler(fn(e) { mem.log(e) }, fn() {  }, fn() {  }))
   logger.flush()
   logger.close()
   inspect(mem.count(), content="0")
 }
 
+///|
 test "Level::Eq comparison" {
   inspect(Level::Debug == Level::Debug, content="true")
   inspect(Level::Debug == Level::Info, content="false")
   inspect(Level::Error != Level::Warn, content="true")
 }
 
+///|
 test "Level::Show display" {
   let s = Level::Debug.to_string()
   inspect(s, content="DEBUG")

@@ -1,3 +1,4 @@
+///|
 /// Plain-text formatter with timestamp, level, module, message and fields.
 pub fn text_formatter() -> (LogEntry) -> String {
   fn(entry : LogEntry) -> String {
@@ -28,6 +29,7 @@ pub fn text_formatter() -> (LogEntry) -> String {
   }
 }
 
+///|
 /// Minimal formatter producing only level and message.
 pub fn compact_formatter() -> (LogEntry) -> String {
   fn(entry : LogEntry) -> String {
@@ -40,6 +42,7 @@ pub fn compact_formatter() -> (LogEntry) -> String {
   }
 }
 
+///|
 /// JSON formatter producing structured log output.
 pub fn json_formatter() -> (LogEntry) -> String {
   fn(entry : LogEntry) -> String {
@@ -59,7 +62,9 @@ pub fn json_formatter() -> (LogEntry) -> String {
       let mut i = 0
       while i < n {
         let (k, v) = entry.fields[i]
-        if i > 0 { sb.write_string(",") }
+        if i > 0 {
+          sb.write_string(",")
+        }
         sb.write_string(jstr(k))
         sb.write_string(":")
         sb.write_string(jstr(v))
@@ -73,8 +78,17 @@ pub fn json_formatter() -> (LogEntry) -> String {
 }
 
 // Write a JSON key-value pair, with optional leading comma.
-fn json_field(sb : StringBuilder, key : String, value : String, first : Bool) -> Unit {
-  if !first { sb.write_string(",") }
+
+///|
+fn json_field(
+  sb : StringBuilder,
+  key : String,
+  value : String,
+  first : Bool,
+) -> Unit {
+  if !first {
+    sb.write_string(",")
+  }
   sb.write_string("\"")
   sb.write_string(key)
   sb.write_string("\":")
@@ -82,22 +96,32 @@ fn json_field(sb : StringBuilder, key : String, value : String, first : Bool) ->
 }
 
 // Escape and quote a string for JSON output.
+
+///|
 fn jstr(s : String) -> String {
   let sb = StringBuilder()
   sb.write_string("\"")
   let chars : Iter[Char] = s.iter()
   for c in chars {
-    if c == '\\' { sb.write_string("\\\\")
-    } else if c == '"' { sb.write_string("\\\"")
-    } else if c == '\n' { sb.write_string("\\n")
-    } else if c == '\r' { sb.write_string("\\r")
-    } else if c == '\t' { sb.write_string("\\t")
-    } else { sb.write_char(c) }
+    if c == '\\' {
+      sb.write_string("\\\\")
+    } else if c == '"' {
+      sb.write_string("\\\"")
+    } else if c == '\n' {
+      sb.write_string("\\n")
+    } else if c == '\r' {
+      sb.write_string("\\r")
+    } else if c == '\t' {
+      sb.write_string("\\t")
+    } else {
+      sb.write_char(c)
+    }
   }
   sb.write_string("\"")
   sb.to_string()
 }
 
+///|
 /// Separator-delimited formatter suitable for audit trails.
 pub fn audit_formatter(separator : String) -> (LogEntry) -> String {
   fn(entry : LogEntry) -> String {
@@ -127,6 +151,7 @@ pub fn audit_formatter(separator : String) -> (LogEntry) -> String {
   }
 }
 
+///|
 /// Wraps a user-provided formatting function as a LogEntry formatter.
 pub fn custom_formatter(f : (LogEntry) -> String) -> (LogEntry) -> String {
   f
