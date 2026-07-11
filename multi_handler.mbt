@@ -1,18 +1,22 @@
+///|
 /// Multi-handler that delegates log operations to a list of sub-handlers.
 pub(all) struct MultiHandler {
   handlers : Array[HandlerFn]
 }
 
+///|
 /// Creates an empty MultiHandler with no sub-handlers.
 pub fn MultiHandler::new() -> MultiHandler {
   { handlers: [] }
 }
 
+///|
 /// Adds a sub-handler to the multi-handler.
 pub fn MultiHandler::add(self : MultiHandler, h : HandlerFn) -> Unit {
   self.handlers.push(h)
 }
 
+///|
 /// Delegates logging to all registered sub-handlers.
 pub fn MultiHandler::log(self : MultiHandler, entry : LogEntry) -> Unit {
   let n = self.handlers.length()
@@ -23,6 +27,7 @@ pub fn MultiHandler::log(self : MultiHandler, entry : LogEntry) -> Unit {
   }
 }
 
+///|
 /// Flushes all registered sub-handlers.
 pub fn MultiHandler::flush(self : MultiHandler) -> Unit {
   let n = self.handlers.length()
@@ -33,6 +38,7 @@ pub fn MultiHandler::flush(self : MultiHandler) -> Unit {
   }
 }
 
+///|
 /// Closes all registered sub-handlers.
 pub fn MultiHandler::close(self : MultiHandler) -> Unit {
   let n = self.handlers.length()

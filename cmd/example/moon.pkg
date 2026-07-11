@@ -1,6 +1,7 @@
-options(
-  "is-main": true,
-)
 import {
   "leppard/moonbit-log" @log,
 }
+
+options(
+  "is-main": true,
+)
